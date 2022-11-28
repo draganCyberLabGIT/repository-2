@@ -1,0 +1,26 @@
+name: 'GitHub Action for PR open'
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+
+jobs:
+  add-comment-and-set-label:
+    name: 'Add comment to new PR'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add label to patch version if not exist
+        if: ${{ (! contains(github.event.pull_request.labels.*.name, 'version:major'))  && (! contains(github.event.pull_request.labels.*.name, 'version:minor')) && (! contains(github.event.pull_request.labels.*.name, 'version:patch')) && (! contains(github.event.pull_request.labels.*.name, 'no_release'))}}
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: version:patch
+      - name: Add message to PR for labeling
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+                If you don't want the default patch release action, please set a `version:major`, `version:minor`, or `no_release`
+                Unless `no_release` is set, this will be deployed to stage on merge.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
