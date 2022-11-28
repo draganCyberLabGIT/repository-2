@@ -21,7 +21,6 @@ jobs:
         id: checkout
         with:
           fetch-depth: 0
-          token: ${{ secrets.UNCHECKED_PUSH_ACCESS_TOKEN }}
       - name: Echo
         run: echo "It works"
       - name: Update version of service
