@@ -24,3 +24,6 @@ jobs:
           token: ${{ secrets.UNCHECKED_PUSH_ACCESS_TOKEN }}
       - name: Echo
         run: echo "It works"
+      - name: Update version of service
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        run: echo "IT WORKSSS"
