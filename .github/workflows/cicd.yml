@@ -2,19 +2,10 @@ name: 'API Service - Merge to main'
 
 on:
   pull_request:
-    branches:
-      - main
-    types:
-      - closed
-  repository_dispatch:
-    types: [ dispatch-new-api-version ]
 
 jobs:
   update-version-and-create-release:
-    if: ${{ (! contains(github.event.pull_request.labels.*.name, 'no_release'))  && ( github.event.pull_request.merged == true ) || (github.event_name == 'repository_dispatch')}}
-    name: 'Update version and create new tag'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout our code
         uses: actions/checkout@v3
@@ -22,7 +13,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Echo
-        run: echo "It works"
-      - name: Update version of service
-        if: ${{ github.event_name == 'repository_dispatch' }}
-        run: echo "IT WORKSSS"
+        uses: gentleseal/action-conventional-commits@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          valid-commit-types: >
+            [
+              "feat",
+              "fix",
+              "docs"
+            ]
